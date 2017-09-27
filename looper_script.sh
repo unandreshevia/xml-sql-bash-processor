@@ -47,59 +47,8 @@ if find . -regextype posix-extended -regex $PREP_ARG | read
 				echo "Moved to $badfolder"
 			else
 				echo "Transfering $FILENAME..."
+				sh ../sql_launcher.sh $FILENAME
 				mv $FILENAME ../$outputfolder
-#####################################################################
-# INSERT IN THIS SECTION THE INVOCATION TO THE SQL SCRIPT
-mysql --protocol=TCP --user=USERNAME_GOES_HERE --password=PASSWORD_GOES_HERE --host=0.0.0.0 -e "set @filename=\"$FILENAME\";set @procfolder=\"$procfolder\";" <<QUERY_INPUT
-LOAD XML LOCAL INFILE '../@procfolder/@filename'
-INTO TABLE landing.test
-ROWS IDENTIFIED BY '<Item>'
-(
-@docid,
-@ReferenceNumber,
-@Created,
-@activationdate,
-@expirationdate,
-@flag,
-@username,
-@Title,
-@RFPCategory,
-@commodity,
-@type,
-@RFPDescription,
-@ZipCode,
-@City,
-@State,
-@sourceurl,
-@orgname,
-@datekey,
-@ItemID,
-@ItemSourceName
-)
-SET
-docid=@docid,
-ReferenceNumber=@ReferenceNumber,
-Created=@Created,
-activation_date=@activationdate,
-expiration_date=@expirationdate,
-flag=@flag,
-username=@username,
-Title=@Title,
-RFPCategory=@RFPCategory,
-commodity=@commodity,
-type=@type,
-RFPDescription=@RFPDescription,
-ZipCode=@ZipCode,
-City=@City,
-State=@State,
-sourceurl=@sourceurl,
-orgname=@orgname,
-datekey=@datekey,
-ItemID=@ItemID,
-ItemSourceName=@ItemSourceName,
-system_file_name=@filename,
-QUERY_INPUT
-#####################################################################
 				echo "$FILENAME loaded successfully."
 			fi
 		done
